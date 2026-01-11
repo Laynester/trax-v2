@@ -130,8 +130,9 @@
 						</template>
 					</div>
 				</div>
-				<div class="flex gap-2">
-					<div class="w-1/4 rounded border border-black text-white items-center text-opacity-25 bg-cyan-900 ring-1 ring-inset ring-cyan-700 hidden lg:flex hover:brightness-[1.5]"
+				<div class="flex gap-1">
+					<div :class="`${getSongDurationSeconds() == 0 ? 'hidden' : 'hidden lg:flex'}`"
+						class="w-1/4 rounded border border-black text-white items-center text-opacity-25 bg-cyan-900 ring-1 ring-inset ring-cyan-700 hover:brightness-[1.5]"
 						@click="copyTraxString()">
 						<div class="px-1 truncate" x-text="traxString"></div>
 					</div>
@@ -144,47 +145,54 @@
 							<img :src="`./imgs/tracks/${selectedIndex + 1}.png`" class="mx-auto" />
 						</button>
 					</template>
-					<button
-						class="ms-auto bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
-						@click="isPlaying ? pauseSong() : playSong()">
-						<img :src="`./imgs/${!isPlaying ? 'play' : 'pause'}.png`" />
-					</button>
-					<button
-						class="bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
-						@click="stopSong()">
-						<img :src="`./imgs/stop.png`" />
-					</button>
-					<button
-						class="bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
-						@click="saveSong()">
-						<img :src="`./imgs/save.png`" />
-					</button>
-					<button
-						class="bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
-						@click="exportAndDownload()">
-						<img :src="`./imgs/${isDownloading ? 'progress_bubbles.gif' : 'download.png'}`" />
-					</button>
-					<button
-						class="bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
-						@click="toggleMasterFilter">
-						<img :src="`./imgs/lowpass-${isFiltered ? 'on' : 'off'}.png`" />
-					</button>
-					<button
-						class="bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
-						@click="clearSong()">
-						<img src="./imgs/trash.png" />
-					</button>
-					<div class="flex gap-0">
-						<button
-							class="p-2 rounded-s text-white border border-black ring-1 ring-inset bg-cyan-900 hover:bg-cyan-800 text-xs ring-cyan-700"
-							@click="decreaseOffset()">
-							<img src="./imgs/pager-left.png" />
+					<div class="ms-auto flex gap-1 w-full">
+						<button :class="`${getSongDurationSeconds() == 0 ? 'hidden' : ''}`"
+							class="ms-auto bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
+							@click="isPlaying ? pauseSong() : playSong()">
+							<img :src="`./imgs/${!isPlaying ? 'play' : 'pause'}.png`" />
 						</button>
-						<button
-							class="p-2 rounded-e text-white border border-black ring-1 ring-inset bg-cyan-900 hover:bg-cyan-800 text-xs ring-cyan-700"
-							@click="increaseOffset()">
-							<img src="./imgs/pager-right.png" />
+						<button :class="`${getSongDurationSeconds() == 0 ? 'hidden' : ''}`"
+							class="bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
+							@click="stopSong()">
+							<img :src="`./imgs/stop.png`" />
 						</button>
+						<button :class="`${getSongDurationSeconds() == 0 ? 'hidden' : ''}`"
+							class="bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
+							@click="saveSong()">
+							<img :src="`./imgs/save.png`" />
+						</button>
+						<button :class="`${(getSongDurationSeconds() == 0 || !config.download) ? 'hidden' : ''}`"
+							class="bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
+							@click="exportAndDownload()">
+							<img :src="`./imgs/${isDownloading ? 'progress_bubbles.gif' : 'download.png'}`" />
+						</button>
+						<button :class="`${getSongDurationSeconds() > 0 ? 'hidden' : ''}`"
+							class="bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex items-center justify-center w-full"
+							@click="importString()">
+							Import song?
+						</button>
+						<button :class="`${(getSongDurationSeconds() == 0 || !config.lowpass) ? 'hidden' : ''}`"
+							class="bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
+							@click="toggleMasterFilter">
+							<img :src="`./imgs/lowpass-${isFiltered ? 'on' : 'off'}.png`" />
+						</button>
+						<button :class="`${(getSongDurationSeconds() == 0) ? 'hidden' : ''}`"
+							class="bg-cyan-900 hover:bg-cyan-800 px-4 py-2 rounded text-white border border-black ring-1 ring-inset ring-cyan-700 flex w-[40px] items-center justify-center"
+							@click="clearSong()">
+							<img src="./imgs/trash.png" />
+						</button>
+						<div class="flex gap-0" :class="`${getSongDurationSeconds() == 0 ? 'hidden' : ''}`">
+							<button
+								class="p-2 rounded-s text-white border border-black ring-1 ring-inset bg-cyan-900 hover:bg-cyan-800 text-xs ring-cyan-700"
+								@click="decreaseOffset()">
+								<img src="./imgs/pager-left.png" />
+							</button>
+							<button
+								class="p-2 rounded-e text-white border border-black ring-1 ring-inset bg-cyan-900 hover:bg-cyan-800 text-xs ring-cyan-700"
+								@click="increaseOffset()">
+								<img src="./imgs/pager-right.png" />
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -194,18 +202,20 @@
 				class="rounded rounded-xl bg-cyan-900 border border-black h-full p-2 relative ring-1 ring-inset ring-cyan-700 overflow-hidden">
 				<div class="flex flex-col gap-2 h-full relative overflow-hidden w-full">
 					<div class="flex gap-2 w-full overflow-y-auto overflow-x-hidden relative">
-						<div
-							class="flex flex-col gap-2 relative shrink-0 w-[60px] pb-[23px] pt-[23px] bg-cyan-900  z-30">
-							<template x-for="track in tracks" :key="track.id">
-								<div
-									class="border border-white/25 border-dashed h-full flex items-center justify-center p-1 text-white rounded h-[40px] w-full relative shrink-0">
-									<input type="text"
-										class="border-0 focus:ring-0 focus:shadow-none bg-transparent w-full text-center"
-										placeholder="0" x-model.number="track.volume"
-										@input="track.gain.gain.value = track.volume / 100">
-								</div>
-							</template>
-						</div>
+						<template x-if="tracks.length > 0 && config.volume">
+							<div
+								class="flex flex-col gap-2 relative shrink-0 w-[60px] pb-[23px] pt-[23px] bg-cyan-900  z-30">
+								<template x-for="track in tracks" :key="track.id">
+									<div
+										class="border border-white/25 border-dashed h-full flex items-center justify-center p-1 text-white rounded h-[40px] w-full relative shrink-0">
+										<input type="text"
+											class="border-0 focus:ring-0 focus:shadow-none bg-transparent w-full text-center"
+											placeholder="0" x-model.number="track.volume"
+											@input="track.gain.gain.value = track.volume / 100">
+									</div>
+								</template>
+							</div>
+						</template>
 						<div class="w-full flex flex-col gap-2 relative h-full pb-[23px] pt-[23px] " x-ref="timeline">
 							<template x-for="track in tracks" :key="track.id + '-a'">
 								<div class="relative h-[40px] shadow-stone-inset bg-stone-700 rounded p-1 shrink-0 w-full border border-black overflow-x-hidden"
@@ -288,11 +298,11 @@
 	<script src="./app.js"></script>
 	<script>
 		// window.onload = () => {
-		// 	window.postMessage({
-		// 		type: "load-trax-string",
-		// 		string: '1:0,4;455,18;0,5;443,2;447,2;443,4;447,2;443,4;447,2;443,4;447,2;443,2;448,4;455,6:2:0,1;430,2;0,7;406,2;0,2;406,2;0,2;406,2;0,2;414,4;0,1;455,2;0,2;261,2;455,2;0,2;261,2;455,2;0,2;261,2;455,2;0,8;412,2;0,2;430,2;261,2:3:0,4;427,20;0,1;458,28;0,2;257,6:4:0,6;426,18;0,1;453,4;451,2;453,4;451,2;453,4;451,2;255,4;451,4;0,2;446,2;0,2;255,2:5:0,6;432,2;0,2;432,2;0,2;432,2;0,2;432,2;0,2;432,3;0,3;442,1;444,2;0,3;442,1;444,2;0,3;442,1;444,2;0,3;442,1;444,2;0,8;458,4;0,2;432,1:6-50:0,2;455,2;0,51;255,2;0,4;432,2:7-25:455,2;0,51;432,1;0,5;255,2:8-50:0,2;427,2:9-50:0,4;426,2:10-25:',
-		// 		//string: '1-50:411,6;0,22;517,2;0,19;84,1:2-75:0,2;443,2;0,21;87,4;0,19;84,1:3:0,4;443,22;0,2;505,12;506,4;508,4;443,8;513,1;522,2:4:0,6;83,22;0,2;517,14;519,2;517,2;0,2;83,6;0,1;518,1:5:0,9;84,1;89,2;84,2;89,2;84,2;89,2;84,2;89,2;0,8;521,8;520,4;0,2;513,1;84,1;0,4;519,2;87,4;518,2:6:0,10;442,2;0,2;442,2;0,2;442,2;0,2;442,1;0,3;518,3;0,4;518,1;509,2;0,1;518,1;509,2:7-25:0,29;518,1;0,20;84,1--lowpass',
-		// 	});
+		// window.postMessage({
+		// 	type: "load-trax-string",
+		// 	//string: '1:0,4;455,18;0,5;443,2;447,2;443,4;447,2;443,4;447,2;443,4;447,2;443,2;448,4;455,6:2:0,1;430,2;0,7;406,2;0,2;406,2;0,2;406,2;0,2;414,4;0,1;455,2;0,2;261,2;455,2;0,2;261,2;455,2;0,2;261,2;455,2;0,8;412,2;0,2;430,2;261,2:3:0,4;427,20;0,1;458,28;0,2;257,6:4:0,6;426,18;0,1;453,4;451,2;453,4;451,2;453,4;451,2;255,4;451,4;0,2;446,2;0,2;255,2:5:0,6;432,2;0,2;432,2;0,2;432,2;0,2;432,2;0,2;432,3;0,3;442,1;444,2;0,3;442,1;444,2;0,3;442,1;444,2;0,3;442,1;444,2;0,8;458,4;0,2;432,1:6-50:0,2;455,2;0,51;255,2;0,4;432,2:7-25:455,2;0,51;432,1;0,5;255,2:8-50:0,2;427,2:9-50:0,4;426,2:10-25:',
+		// 	//string: '1-50:411,6;0,22;517,2;0,19;84,1:2-75:0,2;443,2;0,21;87,4;0,19;84,1:3:0,4;443,22;0,2;505,12;506,4;508,4;443,8;513,1;522,2:4:0,6;83,22;0,2;517,14;519,2;517,2;0,2;83,6;0,1;518,1:5:0,9;84,1;89,2;84,2;89,2;84,2;89,2;84,2;89,2;0,8;521,8;520,4;0,2;513,1;84,1;0,4;519,2;87,4;518,2:6:0,10;442,2;0,2;442,2;0,2;442,2;0,2;442,1;0,3;518,3;0,4;518,1;509,2;0,1;518,1;509,2:7-25:0,29;518,1;0,20;84,1--lowpass',
+		// });
 		// };
 	</script>
 </body>

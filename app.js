@@ -53,6 +53,12 @@ function traxMachine() {
 
         volume: 0,
 
+        config: {
+            download: false,
+            lowpass: false,
+            volume: false,
+        },
+
         init() {
             this.selectedCollections = [];
             this.tracks = [];
@@ -79,6 +85,15 @@ function traxMachine() {
                     this.loadTraxString(event.data.string);
                 }
             };
+
+            let urlParams = new URLSearchParams(window.location.search);
+            let config = urlParams.get('config');
+            if (config) {
+                let opts = config.split(';');
+                if (opts.includes('download')) this.config.download = true;
+                if (opts.includes('lowpass')) this.config.lowpass = true;
+                if (opts.includes('volume')) this.config.volume = true;
+            }
         },
 
         toggleMasterFilter() {
@@ -109,6 +124,8 @@ function traxMachine() {
             const newId = this.tracks.length + 1;
             this.tracks.push({ id: newId, clips: [], volume: 100, gain });
         },
+
+
 
         async selectCollection(collection, force = false) {
             const index = this.selectedCollections.findIndex(
@@ -657,6 +674,14 @@ function traxMachine() {
                         .join(";")}`;
                 })
                 .join(":")) + (this.isFiltered ? '--lowpass' : '');
+        },
+
+        importString() {
+            const value = prompt("Paste your trax string:");
+
+            if (value !== null) {
+                this.loadTraxString(value);
+            }
         },
         async loadTraxString(traxString) {
             const app = this; // your Alpine traxMachine instance

@@ -2,7 +2,10 @@ trax "v2"
 
 standard habbo trax with some custom attributes, per-lane volume controls, low-pass "muffle filter", and saving entire tracks as .wav files
 
-HOWEVER, the custom attributes will not work with existing trax implementations, fairly simple to adjust nitro to work with it tho, or you can just disable the custom by forking this and removing the lane volume controls and the lowpass button
+## note
+
+the custom attibutes will not work with standard trax implementations, so theyre disabled by default, to enable them add a config url param to the link example:
+?config=download;lowpass;volume
 
 https://laynester.github.io/trax-v2/
 
