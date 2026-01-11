@@ -251,7 +251,8 @@
 							</template>
 						</div>
 						<template x-if="tracks.length > 0">
-							<div class="absolute top-0 bottom-0 z-20 border border-cyan-950 rounded flex flex-col pointer-events-none ms-[68px]"
+							<div class="absolute top-0 bottom-0 z-20 border border-cyan-950 rounded flex flex-col pointer-events-none"
+								:class="{'ms-[68px]': config.volume}"
 								:style="{ left:displayX(playheadX) + 'px', height: 39 + (47 * tracks.length) + 'px'  }"
 								x-data="{ moving: false }" @mouseup.window="moving = false" @mousemove.window="
     if (moving) {
@@ -294,8 +295,8 @@
 		</div>
 	</div>
 
-	<script src="./data.js"></script>
-	<script src="./app.js"></script>
+	<script src="./data.js?1"></script>
+	<script src="./app.js?1"></script>
 	<script>
 		// window.onload = () => {
 		// window.postMessage({
